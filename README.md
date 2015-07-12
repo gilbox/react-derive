@@ -11,7 +11,7 @@ component shows the result of adding two numbers.
       }
     }
 
-We can move the calculation of `a+b` a decorator named `@derive`
+We can move the calculation of `a+b` to a decorator named `@derive`
 where we'll create the *deriver* function named sum `sum`. And because we
 named the function `sum`, the deriver's result will be passed
 into the `Add` component via a prop likewise named `sum`.
