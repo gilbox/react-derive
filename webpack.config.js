@@ -19,7 +19,7 @@ if (process.env.COMPRESS) {
 module.exports = {
 
   output: {
-    library: 'ElegantReact',
+    library: 'ReactDerive',
     libraryTarget: 'umd'
   },
 

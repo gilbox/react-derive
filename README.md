@@ -12,7 +12,7 @@ component shows the result of adding two numbers.
     }
 
 We can move the calculation of `a+b` to a decorator named `@derive`
-where we'll create the *deriver* function named sum `sum`. And because we
+where we'll create the *deriver* function named `sum`. And because we
 named the function `sum`, the deriver's result will be passed
 into the `Add` component via a prop likewise named `sum`.
 
@@ -25,6 +25,8 @@ into the `Add` component via a prop likewise named `sum`.
         return <div style={{fontSize}}>a + b = {sum}</div>
       }
     }
+
+Note that the first and only argument to a *deriver* function is always `newProps`.
 
 But wait, every time the component renders, `sum` will recalculate even
 if `a` and `b` didn't change. To optimize, we can memoize the calculation with `@track`
@@ -79,3 +81,15 @@ separate `@memoize` decorator (which is not provided by this package but simple 
     }
 
 Be sure to checkout the [reselect version of the example above](https://github.com/faassen/reselect#example)
+
+# install + import
+
+    npm i react-derive -S
+
+then:
+
+    import {derive, track} from 'react-derive';
+
+or when included via script tag it's available as the global variable `ReactDerive`:
+
+    const {derive, track} = ReactDerive;
