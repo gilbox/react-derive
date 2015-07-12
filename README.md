@@ -4,20 +4,22 @@ For **organizing** and **optimizing** rendering of react components
 that rely on derived data (experimental). For example, lets say your
 component shows the result of adding two numbers.
 
-    export default class List extends Component {
+    export default class Add extends Component {
       render() {
         const {a,b,fontSize} = this.props;
         return <div style={{fontSize}}>a + b = {a+b}</div>
       }
     }
 
-We can move the calculation of `a+b` to another location
-where we'll create the *deriver* function `sum`.
+We can move the calculation of `a+b` a decorator named `@derive`
+where we'll create the *deriver* function named sum `sum`. And because we
+named the function `sum`, the deriver's result will be passed
+into the `Add` component via a prop likewise named `sum`.
 
     @derive({
       sum({a,b}) { return a+b }
     })
-    export default class List extends Component {
+    export default class Add extends Component {
       render() {
         const {sum,fontSize} = this.props;
         return <div style={{fontSize}}>a + b = {sum}</div>
@@ -32,7 +34,7 @@ so when the `fontSize` prop changes `sum` won't be recalculated.
       @track('a', 'b')
       sum({a,b}) { return a+b }
     })
-    export default class List extends Component {
+    export default class Add extends Component {
       render() {
         const {sum,fontSize} = this.props;
         return <div style={{fontSize}}>a + b = {sum}</div>
