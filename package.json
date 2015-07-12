@@ -1,6 +1,6 @@
 {
   "name": "react-derive",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Derived data for your memoizing pleasure",
   "main": "src/",
   "repository": {

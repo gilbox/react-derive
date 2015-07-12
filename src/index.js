@@ -11,7 +11,7 @@ import React, {Component} from 'react';
  * Note: when used in conjunction with @elegant, @derive should be
  *       below @elegant.
  */
-export default function derive(options={}, debug=false) {
+export function derive(options={}, debug=false) {
   return DecoratedComponent => class DeriveDecorator extends Component {
     static displayName = `Derive(${getDisplayName(DecoratedComponent)})`;
     static DecoratedComponent = DecoratedComponent;
