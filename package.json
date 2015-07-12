@@ -1,0 +1,46 @@
+{
+  "name": "react-derive",
+  "version": "0.0.1",
+  "description": "Derived data for your memoizing pleasure",
+  "main": "src/derive-decorator",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gilbox/react-derive.git"
+  },
+  "homepage": "https://github.com/gilbox/react-derive",
+  "bugs": "https://github.com/gilbox/react-derive/issues",
+  "scripts": {
+    "build-global": "rm -rf build/global && NODE_ENV=production webpack src/index.js build/global/react-derive.js && NODE_ENV=production COMPRESS=1 webpack src/index.js build/global/react-derive.min.js && echo \"gzipped, the global build is `gzip -c build/global/react-derive.min.js | wc -c` bytes\"",
+    "build-npm": "rm -rf build/npm && babel -d build/npm/lib ./src --stage 0 && cp README.md build/npm && find -X build/npm/lib -type d -name __tests__ | xargs rm -rf && node -p 'p=require(\"./package-npm\");JSON.stringify(p,null,2)' > build/npm/package.json",
+    "examples": "rm -rf examples/js && webpack-dev-server --config examples/webpack.config.js --content-base examples",
+    "examples-build": "rm -rf examples/js && webpack --config examples/webpack.build.config.js",
+    "test": "jsxhint . && karma start",
+    "publish": "npm publish ./build/npm",
+    "prepush": "npm run examples-build"
+  },
+  "authors": [
+    "Gil Birman <birmangil@gmail.com> (http://gilbox.me/)"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "babel": "^5.6.14",
+    "babel-core": "^5.6.18",
+    "babel-loader": "^5.3.1",
+    "immutable": "^3.7.3",
+    "node-libs-browser": "^0.5.2",
+    "react": "0.13.x",
+    "webpack": "^1.10.1"
+  },
+  "peerDependencies": {},
+  "dependencies": {},
+  "tags": [
+    "react",
+    "react-native",
+    "functional"
+  ],
+  "keywords": [
+    "react",
+    "react-native",
+    "react-component"
+  ]
+}
