@@ -55,17 +55,16 @@ for redux, but takes a different approach. reselect has a
 very nice way to compose *selector* functions. However,
 I find the syntax difficult to read. To compose calculations
 I would prefer to use regular functions with a
-separate `@memoize` decorator (which is not provided by this package but simple to create).
+separate `memoize` decorator (which is not provided by this package but simple to create).
 
-    @memoize
-    function calcSubtotal(items) {
-      return items.reduce((acc, item) => acc + item.value, 0);
-    }
+    const calcSubtotal = memoize(
+      (items) =>
+        items.reduce((acc, item) => acc + item.value, 0)
+    );
 
-    @memoize
-    function calcTax(subtotal, taxPercent) {
-      return subtotal * (taxPercent / 100)
-    }
+    const calcTax = memoize(
+      (subtotal, taxPercent) => subtotal * (taxPercent / 100)
+    );
 
     @derive({
       @track('shop')
