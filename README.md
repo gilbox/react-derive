@@ -1,7 +1,8 @@
 # react-derive
 
 For **organizing** and **optimizing** rendering of react components
-that rely on derived data (experimental). For example, lets say your
+that rely on derived data. Works by wrapping your component in a HoC.
+For example, lets say your
 component shows the result of adding two numbers.
 
     export default class Add extends Component {
@@ -26,7 +27,13 @@ into the `Add` component via a prop likewise named `sum`.
       }
     }
 
-Note that the first and only argument to a *deriver* function is always `newProps`.
+Note that
+
+- The first argument to a *deriver* function is `newProps`.
+- The second argument is the previously derived props object
+  (in this case it would look something like `{a:5,b:3,sum:8}`)
+- The value of `this` allows you to reference the result of other
+  derivers like `this.sum()`.
 
 But wait, every time the component renders, `sum` will recalculate even
 if `a` and `b` didn't change. To optimize, we can memoize the calculation with `@track`
