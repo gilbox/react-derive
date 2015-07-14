@@ -52,9 +52,34 @@ cares about those two props. If `fontSize` changes,
 
 This project is similar to [reselect](https://github.com/faassen/reselect)
 for redux, but takes a different approach. reselect has a
-very nice way to compose *selector* functions. However,
-I find the syntax difficult to read. To compose calculations
-I would prefer to use regular functions with a
+very nice way to compose *selector* functions.  However,
+react-derive offers a different approach
+You can use `this` object to depend on other derived props:
+
+    @derive({
+      @track('taxPercent')
+      tax({taxPercent}) {
+        return this.subtotal() * (taxPercent / 100);
+      },
+
+      @track('items')
+      subtotal({items}) {
+        return items.reduce((acc, item) => acc + item.value, 0);
+      },
+
+      @track('taxPercent')
+      total({taxPercent}) {
+        return this.subtotal() + this.tax();
+      }
+    })
+    class Total extends React.Component {
+      render() {
+        return <div>{ this.props.total }</div>
+      }
+    }
+
+To compose calculations
+an alternative is to use regular functions with a
 separate `memoize` decorator (which is not provided by this package but simple to create).
 
     const calcSubtotal = memoize(
