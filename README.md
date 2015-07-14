@@ -124,3 +124,7 @@ then:
 or when included via script tag it's available as the global variable `ReactDerive`:
 
     const {derive, track} = ReactDerive;
+
+# examples
+
+- [elegant-react-hot-demo](https://github.com/gilbox/elegant-react-hot-demo) (still a WIP)
