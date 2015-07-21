@@ -60,11 +60,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 	var _get = function get(_x4, _x5, _x6) { var _again = true; _function: while (_again) { var object = _x4, property = _x5, receiver = _x6; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x4 = parent; _x5 = property; _x6 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	exports.derive = derive;
 	exports.track = track;
@@ -97,6 +97,44 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 	  var debug = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
 
+	  function calcDerivedProp(prevProps, nextProps, derivedProps, key, xf, delegates) {
+	    // if @track was used then the mapper function (xf) will be annotated
+	    // with 'trackedPops' property, an array of string prop names.
+	    // So here we check if these props have changed and if they haven't,
+	    // we can skip recalculation.
+	    if (xf.trackedProps && xf.trackedProps.every(function (p) {
+	      return prevProps[p] === nextProps[p];
+	    })) {
+	      return derivedProps[key];
+	    }
+
+	    if (debug) console.log(DeriveDecorator.displayName + ': recalculating derived prop \'' + key + '\'');
+	    return xf.call(delegates, nextProps, derivedProps);
+	  }
+
+	  function deriveProps(prevProps, nextProps, derivedProps) {
+	    var nextDerivedProps = {};
+	    var delegates = map.call(options, function (xf, key) {
+	      return function () {
+	        if (!nextDerivedProps.hasOwnProperty(key)) {
+	          nextDerivedProps[key] = BLOCKED;
+	          return nextDerivedProps[key] = calcDerivedProp(prevProps, nextProps, derivedProps, key, xf, delegates);
+	        } else {
+	          if (nextDerivedProps[key] === BLOCKED) {
+	            throw Error('Circular dependencies in derived props, \'' + key + '\' was blocked.');
+	          }
+	          return nextDerivedProps[key];
+	        }
+	      };
+	    });
+
+	    Object.keys(options).forEach(function (key) {
+	      if (!nextDerivedProps.hasOwnProperty(key)) nextDerivedProps[key] = calcDerivedProp(prevProps, nextProps, derivedProps, key, options[key], delegates);
+	    });
+
+	    return _extends({}, nextProps, nextDerivedProps);
+	  }
+
 	  return function (DecoratedComponent) {
 	    return (function (_Component) {
 	      _inherits(DeriveDecorator, _Component);
@@ -108,68 +146,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      _createClass(DeriveDecorator, [{
-	        key: '_calcDerivedProp',
-	        value: function _calcDerivedProp(nextProps, key, xf, delegates) {
-	          var _this = this;
-
-	          var trackedProps = xf.trackedProps;
-
-	          // if @track was used then the mapper function (xf) will be annotated
-	          // with 'trackedPops' property, an array of string prop names.
-	          // So here we check if these props have changed and if they haven't,
-	          // we can skip recalculation.
-	          if (xf.trackedProps) {
-	            var _ret = (function () {
-	              var changed = false;
-	              xf.trackedProps.forEach(function (p) {
-	                changed = changed || _this.props[p] !== nextProps[p];
-	              });
-	              if (!changed) return {
-	                  v: _this.derivedProps[key]
-	                };
-	            })();
-
-	            if (typeof _ret === 'object') return _ret.v;
-	          }
-
-	          if (debug) console.log(DeriveDecorator.displayName + ': recalculating derived prop \'' + key + '\'');
-	          return xf.call(delegates, nextProps, this.derivedProps);
-	        }
-	      }, {
-	        key: '_derive',
-	        value: function _derive(nextProps) {
-	          var _this2 = this;
-
-	          var derivedProps = {};
-	          var delegates = map.call(options, function (xf, key) {
-	            return function () {
-	              if (!derivedProps.hasOwnProperty(key)) {
-	                derivedProps[key] = BLOCKED;
-	                return derivedProps[key] = _this2._calcDerivedProp(nextProps, key, xf, delegates);
-	              } else {
-	                if (derivedProps[key] === BLOCKED) {
-	                  throw Error('Circular dependencies in derived props, \'' + key + '\' was blocked.');
-	                }
-	                return derivedProps[key];
-	              }
-	            };
-	          });
-
-	          Object.keys(options).forEach(function (key) {
-	            if (!derivedProps.hasOwnProperty(key)) derivedProps[key] = _this2._calcDerivedProp(nextProps, key, options[key], delegates);
-	          });
-
-	          this.derivedProps = _extends({}, nextProps, derivedProps);
-	        }
-	      }, {
 	        key: 'componentWillMount',
 	        value: function componentWillMount() {
-	          this._derive(this.props);
+	          this.derivedProps = deriveProps({}, this.props, {});
 	        }
 	      }, {
 	        key: 'componentWillUpdate',
 	        value: function componentWillUpdate(nextProps) {
-	          this._derive(nextProps);
+	          this.derivedProps = deriveProps(this.props, nextProps, this.derivedProps);
 	        }
 	      }, {
 	        key: 'render',
@@ -214,12 +198,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * map an object to an object
 	 */
 	function map(f) {
-	  var _this3 = this;
+	  var _this = this;
 
 	  var result = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
 	  Object.keys(this).forEach(function (k) {
-	    return result[k] = f(_this3[k], k);
+	    return result[k] = f(_this[k], k);
 	  });
 	  return result;
 	}
