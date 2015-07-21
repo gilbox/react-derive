@@ -15,8 +15,6 @@ const BLOCKED = {};
 export function derive(options={}, debug=false) {
 
   function calcDerivedProp(prevProps, nextProps, derivedProps, key, xf, delegates) {
-    const trackedProps = xf.trackedProps;
-
     // if @track was used then the mapper function (xf) will be annotated
     // with 'trackedPops' property, an array of string prop names.
     // So here we check if these props have changed and if they haven't,
