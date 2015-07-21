@@ -13,59 +13,58 @@ const BLOCKED = {};
  *       below @elegant.
  */
 export function derive(options={}, debug=false) {
+
+  function calcDerivedProp(prevProps, nextProps, derivedProps, key, xf, delegates) {
+    const trackedProps = xf.trackedProps;
+
+    // if @track was used then the mapper function (xf) will be annotated
+    // with 'trackedPops' property, an array of string prop names.
+    // So here we check if these props have changed and if they haven't,
+    // we can skip recalculation.
+    if (xf.trackedProps && xf.trackedProps.every(p => prevProps[p] === nextProps[p])) {
+      return derivedProps[key];
+    }
+
+    if (debug) console.log(`${DeriveDecorator.displayName}: recalculating derived prop '${key}'`);
+    return xf.call(delegates, nextProps, derivedProps);
+  }
+
+  function deriveProps(prevProps, nextProps, derivedProps) {
+    const nextDerivedProps = {};
+    const delegates =
+      options::map((xf,key) =>
+        () => {
+          if (!nextDerivedProps.hasOwnProperty(key)) {
+            nextDerivedProps[key] = BLOCKED;
+            return nextDerivedProps[key] = calcDerivedProp(
+              prevProps, nextProps, derivedProps, key, xf, delegates);
+          } else {
+            if (nextDerivedProps[key] === BLOCKED) {
+              throw Error(`Circular dependencies in derived props, '${key}' was blocked.`)
+            }
+            return nextDerivedProps[key]
+          }
+        });
+
+    Object.keys(options).forEach(key => {
+      if (!nextDerivedProps.hasOwnProperty(key))
+        nextDerivedProps[key] = calcDerivedProp(
+          prevProps, nextProps, derivedProps, key, options[key], delegates);
+    });
+
+    return {...nextProps, ...nextDerivedProps};
+  }
+
   return DecoratedComponent => class DeriveDecorator extends Component {
     static displayName = `Derive(${getDisplayName(DecoratedComponent)})`;
     static DecoratedComponent = DecoratedComponent;
 
-    _calcDerivedProp(nextProps, key, xf, delegates) {
-      const trackedProps = xf.trackedProps;
-
-      // if @track was used then the mapper function (xf) will be annotated
-      // with 'trackedPops' property, an array of string prop names.
-      // So here we check if these props have changed and if they haven't,
-      // we can skip recalculation.
-      if (xf.trackedProps) {
-        let changed = false;
-        xf.trackedProps.forEach(p => {
-          changed = changed || (this.props[p] !== nextProps[p]);
-        });
-        if (!changed) return this.derivedProps[key];
-      }
-
-      if (debug) console.log(`${DeriveDecorator.displayName}: recalculating derived prop '${key}'`);
-      return xf.call(delegates, nextProps, this.derivedProps);
-    }
-
-    _derive(nextProps) {
-      const derivedProps = {};
-      const delegates =
-        options::map((xf,key) =>
-          () => {
-            if (!derivedProps.hasOwnProperty(key)) {
-              derivedProps[key] = BLOCKED;
-              return derivedProps[key] = this._calcDerivedProp(nextProps, key, xf, delegates);
-            } else {
-              if (derivedProps[key] === BLOCKED) {
-                throw Error(`Circular dependencies in derived props, '${key}' was blocked.`)
-              }
-              return derivedProps[key]
-            }
-          });
-
-      Object.keys(options).forEach(key => {
-        if (!derivedProps.hasOwnProperty(key))
-          derivedProps[key] = this._calcDerivedProp(nextProps, key, options[key], delegates);
-      });
-
-      this.derivedProps = {...nextProps, ...derivedProps};
-    }
-
     componentWillMount() {
-      this._derive(this.props);
+      this.derivedProps = deriveProps({}, this.props, {});
     }
-    
+
     componentWillUpdate(nextProps) {
-      this._derive(nextProps);
+      this.derivedProps = deriveProps(this.props, nextProps, this.derivedProps);
     }
 
     render() {

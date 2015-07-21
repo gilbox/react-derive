@@ -1,5 +1,5 @@
 jest.dontMock('../index');
-import {derive} from '../index';
+import {derive, track} from '../index';
 import React, {Component, addons} from 'react/addons';
 const {TestUtils} = addons;
 
@@ -111,3 +111,47 @@ describe('derive', () => {
     }
   });
 });
+
+describe('track', () => {
+  it('should track prop changes and only re-render as necessary', () => {
+    let derivedProps;
+    let renderCount = 0;
+    let fooCount = 0;
+
+    const options = {
+      @track('bar')
+      foo({bar}) {
+        fooCount++;
+        return bar+1;
+      }
+    };
+
+    const Comp = createTestComponent(options, props => {
+      renderCount++;
+      derivedProps = props;
+    });
+    const Container = class Container extends Component {
+      render() {
+        const bar = this.state && this.state.bar;
+        return bar ? <Comp bar={bar} /> : null;
+      }
+    }
+
+    const container = TestUtils.renderIntoDocument(<Container />);
+
+    container.setState({bar: 10});
+    expect(fooCount).toEqual(1);
+    expect(renderCount).toEqual(1);
+    expect(derivedProps.foo).toEqual(11);
+
+    container.setState({bar: 20});
+    expect(fooCount).toEqual(2);
+    expect(renderCount).toEqual(2);
+    expect(derivedProps.foo).toEqual(21);
+
+    container.setState({baz: 666});
+    expect(fooCount).toEqual(2);
+    expect(renderCount).toEqual(3);
+    expect(derivedProps.foo).toEqual(21);
+  })
+})
