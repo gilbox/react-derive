@@ -2,15 +2,14 @@ import React, {Component} from 'react';
 const BLOCKED = {};
 
 /**
- * When used in conjunction with @track, will only re-calculate
- * derived props when the tracked props changed. If they didn't change,
- * will use previously calculated derived props.
+ * ## derive
  *
- * Obviously, when used as a sub-HoC of @elegant this is only necessary
- * when there are other props that might change that are not tracked.
+ * Used to define derived data.
+ * When used in conjunction with @elegant, @derive should be below @elegant.
  *
- * Note: when used in conjunction with @elegant, @derive should be
- *       below @elegant.
+ * @param {Object} options
+ * @param {Boolean} debug
+ * @return {Object}
  */
 export function derive(options={}, debug=false) {
 
@@ -18,7 +17,12 @@ export function derive(options={}, debug=false) {
     const nextDerivedProps = {};
 
     const calcDerivedProp = (key, xf) => {
-      // if @track was used then the mapper function (xf) will be annotated
+
+      // When `@derive` is used in conjunction with `@track`, we only re-calculate
+      // derived props when the tracked props changed. If they didn't change,
+      // use previously calculated derived props.
+      //
+      // So if @track was used then the mapper function (xf) will be annotated
       // with 'trackedPops' property, an array of string prop names.
       // So here we check if these props have changed and if they haven't,
       // we can skip recalculation.
@@ -30,6 +34,8 @@ export function derive(options={}, debug=false) {
       return xf.call(delegates, nextProps, derivedProps);
     };
 
+    // `delegates` is the object that will be attached to the `this` Object
+    // of deriver functions. (see `xf.call(delegates...)` above)
     const delegates =
       options::map((xf,key) =>
         () => {
@@ -52,6 +58,7 @@ export function derive(options={}, debug=false) {
     return {...nextProps, ...nextDerivedProps};
   }
 
+  // The HoC that will pass along the derived props.
   return DecoratedComponent => class DeriveDecorator extends Component {
     static displayName = `Derive(${getDisplayName(DecoratedComponent)})`;
     static DecoratedComponent = DecoratedComponent;
@@ -71,8 +78,14 @@ export function derive(options={}, debug=false) {
 }
 
 /**
+ * ## track
+ *
  * Object literal decorator that annotates a mapper function
- * to have a 'trackedProps' property
+ * to have a 'trackedProps' property. Used by `@derive` to memoize
+ * props.
+ *
+ * @method track
+ * @return {Function}
  */
 export function track(...trackedProps) {
   return function(target, key, descriptor) {
@@ -85,7 +98,11 @@ function getDisplayName (comp) {
 }
 
 /**
+ * ## map
  * map an object to an object
+ *
+ * @param {Function} f
+ * @return {Object}
  */
 function map(f, result={}) {
   Object.keys(this).forEach(k => result[k] = f(this[k],k));

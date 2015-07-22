@@ -16,16 +16,26 @@
     "examples-build": "rm -rf examples/js && webpack --config examples/webpack.build.config.js",
     "test": "BABEL_JEST_STAGE=0 jest",
     "publish": "npm publish ./build/npm",
-    "prepush": "npm run examples-build"
+    "prepush": "npm run examples-build",
+    "docs": "docker -i src -I -o ../react-derive_gh-pages/"
   },
   "authors": [
     "Gil Birman <birmangil@gmail.com> (http://gilbox.me/)"
   ],
   "jest": {
     "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
-    "testFileExtensions": ["es6", "js"],
-    "moduleFileExtensions": ["js", "json", "es6"],
-    "unmockedModulePathPatterns": ["react"]
+    "testFileExtensions": [
+      "es6",
+      "js"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "es6"
+    ],
+    "unmockedModulePathPatterns": [
+      "react"
+    ]
   },
   "license": "MIT",
   "devDependencies": {
@@ -34,9 +44,9 @@
     "babel-jest": "^5.3.0",
     "babel-loader": "^5.3.1",
     "immutable": "^3.7.3",
-    "jest-cli": "^0.4.15",
+    "jest-cli": "^0.4.16",
     "node-libs-browser": "^0.5.2",
-    "react": "0.13.x",
+    "react": "^0.13.3",
     "webpack": "^1.10.1"
   },
   "peerDependencies": {},

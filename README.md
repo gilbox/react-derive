@@ -125,6 +125,8 @@ or when included via script tag it's available as the global variable `ReactDeri
 
     const {derive, track} = ReactDerive;
 
+# [documentation](http://gilbox.github.io/react-derive/index.js.html)
+
 # examples
 
 - [elegant-react-hot-demo](https://github.com/gilbox/elegant-react-hot-demo) (still a WIP)
