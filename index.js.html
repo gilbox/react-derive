@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>index.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="doc-style.css" />
+  <script src="doc-filelist.js"></script>
+  <script>
+    var relativeDir = "", thisFile = "Users/gil/projects/react-derive//index.js", defaultSidebar = true;
+  </script>
+  <script src="doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h2">
+        <a href="#derive">derive</a>
+      </div>
+      <div class="heading h2">
+        <a href="#track">track</a>
+      </div>
+      <div class="heading h2">
+        <a href="#map">map</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>index.js</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="kr">import</span> <span class="nx">React</span><span class="p">,</span> <span class="p">{</span><span class="nx">Component</span><span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;react&#39;</span><span class="p">;</span>
+<span class="kr">const</span> <span class="nx">BLOCKED</span> <span class="o">=</span> <span class="p">{};</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="derive">
+  <h2>
+    <a href="#derive" name="derive" class="pilcrow">&#182;</a>
+    derive
+  </h2>
+</div>
+
+  </div>
+  <div class="body"><p>Used to define derived data.
+When used in conjunction with @elegant, @derive should be below @elegant.</p>
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">options</span>
+      <span class="dox_type">Object</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">debug</span>
+      <span class="dox_type">Boolean</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">Object
+</span>
+      <span>{Object}</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+<span class="kr">export</span> <span class="kd">function</span> <span class="nx">derive</span><span class="p">(</span><span class="nx">options</span><span class="o">=</span><span class="p">{},</span> <span class="nx">debug</span><span class="o">=</span><span class="kc">false</span><span class="p">)</span> <span class="p">{</span>
+
+  <span class="kd">function</span> <span class="nx">deriveProps</span><span class="p">(</span><span class="nx">prevProps</span><span class="p">,</span> <span class="nx">nextProps</span><span class="p">,</span> <span class="nx">derivedProps</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kr">const</span> <span class="nx">nextDerivedProps</span> <span class="o">=</span> <span class="p">{};</span>
+
+    <span class="kr">const</span> <span class="nx">calcDerivedProp</span> <span class="o">=</span> <span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">xf</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-3" id="section-3">&#182;</a>
+</div>
+<p>When <code>@derive</code> is used in conjunction with <code>@track</code>, we only re-calculate
+derived props when the tracked props changed. If they didn't change,
+use previously calculated derived props.</p>
+
+<p>So if @track was used then the mapper function (xf) will be annotated
+with 'trackedPops' property, an array of string prop names.
+So here we check if these props have changed and if they haven't,
+we can skip recalculation.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">xf</span><span class="p">.</span><span class="nx">trackedProps</span> <span class="o">&amp;&amp;</span> <span class="nx">xf</span><span class="p">.</span><span class="nx">trackedProps</span><span class="p">.</span><span class="nx">every</span><span class="p">(</span><span class="nx">p</span> <span class="o">=&gt;</span> <span class="nx">prevProps</span><span class="p">[</span><span class="nx">p</span><span class="p">]</span> <span class="o">===</span> <span class="nx">nextProps</span><span class="p">[</span><span class="nx">p</span><span class="p">]))</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">derivedProps</span><span class="p">[</span><span class="nx">key</span><span class="p">];</span>
+      <span class="p">}</span>
+
+      <span class="k">if</span> <span class="p">(</span><span class="nx">debug</span><span class="p">)</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="err">`</span><span class="nx">$</span><span class="p">{</span><span class="nx">DeriveDecorator</span><span class="p">.</span><span class="nx">displayName</span><span class="p">}</span><span class="o">:</span> <span class="nx">recalculating</span> <span class="nx">derived</span> <span class="nx">prop</span> <span class="s1">&#39;${key}&#39;</span><span class="err">`</span><span class="p">);</span>
+      <span class="k">return</span> <span class="nx">xf</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">delegates</span><span class="p">,</span> <span class="nx">nextProps</span><span class="p">,</span> <span class="nx">derivedProps</span><span class="p">);</span>
+    <span class="p">};</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-4" id="section-4">&#182;</a>
+</div>
+<p><code>delegates</code> is the object that will be attached to the <code>this</code> Object
+of deriver functions. (see <code>xf.call(delegates...)</code> above)</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+    <span class="kr">const</span> <span class="nx">delegates</span> <span class="o">=</span>
+      <span class="nx">options</span><span class="o">::</span><span class="nx">map</span><span class="p">((</span><span class="nx">xf</span><span class="p">,</span><span class="nx">key</span><span class="p">)</span> <span class="o">=&gt;</span>
+        <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+          <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">nextDerivedProps</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="nx">key</span><span class="p">))</span> <span class="p">{</span>
+            <span class="nx">nextDerivedProps</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">BLOCKED</span><span class="p">;</span>
+            <span class="k">return</span> <span class="nx">nextDerivedProps</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">calcDerivedProp</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">xf</span><span class="p">);</span>
+          <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">nextDerivedProps</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">===</span> <span class="nx">BLOCKED</span><span class="p">)</span> <span class="p">{</span>
+              <span class="k">throw</span> <span class="nb">Error</span><span class="p">(</span><span class="err">`</span><span class="nx">Circular</span> <span class="nx">dependencies</span> <span class="k">in</span> <span class="nx">derived</span> <span class="nx">props</span><span class="p">,</span> <span class="s1">&#39;${key}&#39;</span> <span class="nx">was</span> <span class="nx">blocked</span><span class="p">.</span><span class="err">`</span><span class="p">)</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="nx">nextDerivedProps</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span>
+          <span class="p">}</span>
+        <span class="p">});</span>
+
+    <span class="nb">Object</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">options</span><span class="p">).</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">key</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">nextDerivedProps</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="nx">key</span><span class="p">))</span>
+        <span class="nx">nextDerivedProps</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">calcDerivedProp</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">options</span><span class="p">[</span><span class="nx">key</span><span class="p">]);</span>
+    <span class="p">});</span>
+
+    <span class="k">return</span> <span class="p">{...</span><span class="nx">nextProps</span><span class="p">,</span> <span class="p">...</span><span class="nx">nextDerivedProps</span><span class="p">};</span>
+  <span class="p">}</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-5" id="section-5">&#182;</a>
+</div>
+<p>The HoC that will pass along the derived props.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+  <span class="k">return</span> <span class="nx">DecoratedComponent</span> <span class="o">=&gt;</span> <span class="kr">class</span> <span class="nx">DeriveDecorator</span> <span class="kr">extends</span> <span class="nx">Component</span> <span class="p">{</span>
+    <span class="kr">static</span> <span class="nx">displayName</span> <span class="o">=</span> <span class="err">`</span><span class="nx">Derive</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="nx">getDisplayName</span><span class="p">(</span><span class="nx">DecoratedComponent</span><span class="p">)})</span><span class="err">`</span><span class="p">;</span>
+    <span class="kr">static</span> <span class="nx">DecoratedComponent</span> <span class="o">=</span> <span class="nx">DecoratedComponent</span><span class="p">;</span>
+
+    <span class="nx">componentWillMount</span><span class="p">()</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">derivedProps</span> <span class="o">=</span> <span class="nx">deriveProps</span><span class="p">({},</span> <span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">,</span> <span class="p">{});</span>
+    <span class="p">}</span>
+
+    <span class="nx">componentWillUpdate</span><span class="p">(</span><span class="nx">nextProps</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">derivedProps</span> <span class="o">=</span> <span class="nx">deriveProps</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">,</span> <span class="nx">nextProps</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">derivedProps</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">React</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="nx">DecoratedComponent</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">derivedProps</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="track">
+  <h2>
+    <a href="#track" name="track" class="pilcrow">&#182;</a>
+    track
+  </h2>
+</div>
+
+  </div>
+  <div class="body"><p>Object literal decorator that annotates a mapper function
+to have a 'trackedProps' property. Used by <code>@derive</code> to memoize
+props.</p>
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">method</div>
+    <div class="dox_tag_detail">
+      <span>track</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">Function
+</span>
+      <span>{Function}</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+<span class="kr">export</span> <span class="kd">function</span> <span class="nx">track</span><span class="p">(...</span><span class="nx">trackedProps</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="kd">function</span><span class="p">(</span><span class="nx">target</span><span class="p">,</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">descriptor</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">descriptor</span><span class="p">.</span><span class="nx">value</span><span class="p">.</span><span class="nx">trackedProps</span> <span class="o">=</span> <span class="nx">trackedProps</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">getDisplayName</span> <span class="p">(</span><span class="nx">comp</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">comp</span><span class="p">.</span><span class="nx">displayName</span> <span class="o">||</span> <span class="nx">comp</span><span class="p">.</span><span class="nx">name</span> <span class="o">||</span> <span class="s1">&#39;Component&#39;</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="map">
+  <h2>
+    <a href="#map" name="map" class="pilcrow">&#182;</a>
+    map
+  </h2>
+</div>
+
+
+<p>map an object to an object</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">f</span>
+      <span class="dox_type">Function</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">Object
+</span>
+      <span>{Object}</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+<span class="kd">function</span> <span class="nx">map</span><span class="p">(</span><span class="nx">f</span><span class="p">,</span> <span class="nx">result</span><span class="o">=</span><span class="p">{})</span> <span class="p">{</span>
+  <span class="nb">Object</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">k</span> <span class="o">=&gt;</span> <span class="nx">result</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nx">f</span><span class="p">(</span><span class="k">this</span><span class="p">[</span><span class="nx">k</span><span class="p">],</span><span class="nx">k</span><span class="p">));</span>
+  <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>
