@@ -17,7 +17,7 @@
     "test": "BABEL_JEST_STAGE=0 jest",
     "publish": "npm publish ./build/npm",
     "prepush": "npm run examples-build",
-    "docs": "docker -i src -I -o ../react-derive_gh-pages/ -s disable"
+    "docs": "docker -i src -I -o ../react-derive_gh-pages/ -s disable -c pastie"
   },
   "authors": [
     "Gil Birman <birmangil@gmail.com> (http://gilbox.me/)"
