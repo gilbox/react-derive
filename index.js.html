@@ -6,11 +6,11 @@
   <link rel="stylesheet" media="all" href="doc-style.css" />
   <script src="doc-filelist.js"></script>
   <script>
-    var relativeDir = "", thisFile = "Users/gil/projects/react-derive//index.js", defaultSidebar = true;
+    var relativeDir = "", thisFile = "Users/gil/projects/react-derive//index.js", defaultSidebar = false;
   </script>
   <script src="doc-script.js"></script>
 </head>
-<body>
+<body class="no-sidebar">
   <div id="sidebar_wrapper">
     <div id="sidebar_switch">
       <span class="tree">Files</span>
@@ -25,7 +25,7 @@
         <a href="#track">track</a>
       </div>
       <div class="heading h2">
-        <a href="#map">map</a>
+        <a href="#map%20(private)">map (private)</a>
       </div>
     </div>
   </div>
@@ -64,18 +64,19 @@
 </div>
 
   </div>
-  <div class="body"><p>Used to define derived data.
-When used in conjunction with @elegant, @derive should be below @elegant.</p>
+  <div class="body"><p>Create a derived data higher-order component (HoC).</p>
   </div>
   <div class="details">
     <div class="dox_tag_title">Params</div>
     <div class="dox_tag_detail">
       <span class="dox_tag_name">options</span>
       <span class="dox_type">Object</span>
+      <span>(optional)</span>
     </div>
     <div class="dox_tag_detail">
       <span class="dox_tag_name">debug</span>
       <span class="dox_type">Boolean</span>
+      <span>(optional)</span>
     </div>
     <div class="dox_tag_title">Returns</div>
     <div class="dox_tag_detail">
@@ -104,17 +105,23 @@ When used in conjunction with @elegant, @derive should be below @elegant.</p>
 <div class="pilwrap">
   <a class="pilcrow" href="#section-3" id="section-3">&#182;</a>
 </div>
-<p>When <code>@derive</code> is used in conjunction with <code>@track</code>, we only re-calculate
-derived props when the tracked props changed. If they didn't change,
-use previously calculated derived props.</p>
-
-<p>So if @track was used then the mapper function (xf) will be annotated
-with 'trackedPops' property, an array of string prop names.
-So here we check if these props have changed and if they haven't,
-we can skip recalculation.</p>
+<p>When <code>xf</code> is annotated with <code>trackedProps</code> (by <code>@track</code>), only re-calculate
+derived props when the tracked props changed.</p>
         </td>
         <td class="code highlight"><div class="highlight"><pre>
       <span class="k">if</span> <span class="p">(</span><span class="nx">xf</span><span class="p">.</span><span class="nx">trackedProps</span> <span class="o">&amp;&amp;</span> <span class="nx">xf</span><span class="p">.</span><span class="nx">trackedProps</span><span class="p">.</span><span class="nx">every</span><span class="p">(</span><span class="nx">p</span> <span class="o">=&gt;</span> <span class="nx">prevProps</span><span class="p">[</span><span class="nx">p</span><span class="p">]</span> <span class="o">===</span> <span class="nx">nextProps</span><span class="p">[</span><span class="nx">p</span><span class="p">]))</span> <span class="p">{</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-4" id="section-4">&#182;</a>
+</div>
+<p>No change, use previously calculated derived props.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
         <span class="k">return</span> <span class="nx">derivedProps</span><span class="p">[</span><span class="nx">key</span><span class="p">];</span>
       <span class="p">}</span>
 
@@ -129,10 +136,10 @@ we can skip recalculation.</p>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-4" id="section-4">&#182;</a>
+  <a class="pilcrow" href="#section-5" id="section-5">&#182;</a>
 </div>
 <p><code>delegates</code> is the object that will be attached to the <code>this</code> Object
-of deriver functions. (see <code>xf.call(delegates...)</code> above)</p>
+of deriver (<code>xf</code>) functions. (see <code>xf.call(delegates...)</code> above)</p>
         </td>
         <td class="code highlight"><div class="highlight"><pre>
     <span class="kr">const</span> <span class="nx">delegates</span> <span class="o">=</span>
@@ -151,6 +158,18 @@ of deriver functions. (see <code>xf.call(delegates...)</code> above)</p>
 
     <span class="nb">Object</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">options</span><span class="p">).</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">key</span> <span class="o">=&gt;</span> <span class="p">{</span>
       <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">nextDerivedProps</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="nx">key</span><span class="p">))</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-6" id="section-6">&#182;</a>
+</div>
+<p>calculate derived prop</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
         <span class="nx">nextDerivedProps</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">calcDerivedProp</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">options</span><span class="p">[</span><span class="nx">key</span><span class="p">]);</span>
     <span class="p">});</span>
 
@@ -164,9 +183,9 @@ of deriver functions. (see <code>xf.call(delegates...)</code> above)</p>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-5" id="section-5">&#182;</a>
+  <a class="pilcrow" href="#section-7" id="section-7">&#182;</a>
 </div>
-<p>The HoC that will pass along the derived props.</p>
+<p>Return the HoC that will manage derived props.</p>
         </td>
         <td class="code highlight"><div class="highlight"><pre>
   <span class="k">return</span> <span class="nx">DecoratedComponent</span> <span class="o">=&gt;</span> <span class="kr">class</span> <span class="nx">DeriveDecorator</span> <span class="kr">extends</span> <span class="nx">Component</span> <span class="p">{</span>
@@ -207,9 +226,10 @@ to have a 'trackedProps' property. Used by <code>@derive</code> to memoize
 props.</p>
   </div>
   <div class="details">
-    <div class="dox_tag_title">method</div>
+    <div class="dox_tag_title">Params</div>
     <div class="dox_tag_detail">
-      <span>track</span>
+      <span class="dox_tag_name">trackedProps</span>
+      <span class="dox_type">String...</span>
     </div>
     <div class="dox_tag_title">Returns</div>
     <div class="dox_tag_detail">
@@ -239,10 +259,10 @@ props.</p>
       <tr>
         <td class="docs"><div class="dox">
   <div class="summary">
-<div class="pilwrap" id="map">
+<div class="pilwrap" id="map%20(private)">
   <h2>
-    <a href="#map" name="map" class="pilcrow">&#182;</a>
-    map
+    <a href="#map%20(private)" name="map%20(private)" class="pilcrow">&#182;</a>
+    map (private)
   </h2>
 </div>
 
@@ -256,6 +276,11 @@ props.</p>
     <div class="dox_tag_detail">
       <span class="dox_tag_name">f</span>
       <span class="dox_type">Function</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">result</span>
+      <span class="dox_type">Object</span>
+      <span>(optional)</span>
     </div>
     <div class="dox_tag_title">Returns</div>
     <div class="dox_tag_detail">
