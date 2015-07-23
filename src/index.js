@@ -4,29 +4,26 @@ const BLOCKED = {};
 /**
  * ## derive
  *
- * Used to define derived data.
- * When used in conjunction with @elegant, @derive should be below @elegant.
+ * Create a derived data higher-order component (HoC).
  *
- * @param {Object} options
- * @param {Boolean} debug
+ * @param {Object} options (optional)
+ * @param {Boolean} debug (optional)
  * @return {Object}
  */
 export function derive(options={}, debug=false) {
 
+  // `deriveProps` takes props from the previous render (`prevProps`), props
+  // from the current render (`nextProps`), and derived props from the previous
+  // render (`derivedProps`) and returns a new object with the newly derived props.
   function deriveProps(prevProps, nextProps, derivedProps) {
     const nextDerivedProps = {};
 
     const calcDerivedProp = (key, xf) => {
 
-      // When `@derive` is used in conjunction with `@track`, we only re-calculate
-      // derived props when the tracked props changed. If they didn't change,
-      // use previously calculated derived props.
-      //
-      // So if @track was used then the mapper function (xf) will be annotated
-      // with 'trackedPops' property, an array of string prop names.
-      // So here we check if these props have changed and if they haven't,
-      // we can skip recalculation.
+      // When `xf` is annotated with `trackedProps` (by `@track`), only re-calculate
+      // derived props when the tracked props changed.
       if (xf.trackedProps && xf.trackedProps.every(p => prevProps[p] === nextProps[p])) {
+        // No change, use previously calculated derived props.
         return derivedProps[key];
       }
 
@@ -35,7 +32,7 @@ export function derive(options={}, debug=false) {
     };
 
     // `delegates` is the object that will be attached to the `this` Object
-    // of deriver functions. (see `xf.call(delegates...)` above)
+    // of deriver (`xf`) functions. (see `xf.call(delegates...)` above)
     const delegates =
       options::map((xf,key) =>
         () => {
@@ -52,13 +49,14 @@ export function derive(options={}, debug=false) {
 
     Object.keys(options).forEach(key => {
       if (!nextDerivedProps.hasOwnProperty(key))
+        // calculate derived prop
         nextDerivedProps[key] = calcDerivedProp(key, options[key]);
     });
 
     return {...nextProps, ...nextDerivedProps};
   }
 
-  // The HoC that will pass along the derived props.
+  // Return the HoC that will manage derived props.
   return DecoratedComponent => class DeriveDecorator extends Component {
     static displayName = `Derive(${getDisplayName(DecoratedComponent)})`;
     static DecoratedComponent = DecoratedComponent;
@@ -84,7 +82,7 @@ export function derive(options={}, debug=false) {
  * to have a 'trackedProps' property. Used by `@derive` to memoize
  * props.
  *
- * @method track
+ * @param {String...} trackedProps
  * @return {Function}
  */
 export function track(...trackedProps) {
@@ -98,10 +96,11 @@ function getDisplayName (comp) {
 }
 
 /**
- * ## map
+ * ## map (private)
  * map an object to an object
  *
  * @param {Function} f
+ * @param {Object} result (optional)
  * @return {Object}
  */
 function map(f, result={}) {
