@@ -58,9 +58,12 @@ cares about those two props. If `fontSize` changes,
 -------
 
 This project is similar to [reselect](https://github.com/faassen/reselect)
-for redux, but takes a different approach. reselect has a
-very nice way to compose *selector* functions.  However,
+for redux. reselect has a
+very nice way to compose *selector* functions. However,
 react-derive offers a different approach
+
+## `@derive` as a decorator
+
 You can use `this` object to depend on other derived props:
 
     @derive({
@@ -85,48 +88,39 @@ You can use `this` object to depend on other derived props:
       }
     }
 
-To compose calculations
-an alternative is to use regular functions with a
-separate `memoize` decorator (which is not provided by this package but simple to create).
+See the [reselect version of the example above](https://github.com/faassen/reselect#example)
 
-    const calcSubtotal = memoize(
-      (items) =>
-        items.reduce((acc, item) => acc + item.value, 0)
-    );
+## `Derive` as a Component
 
-    const calcTax = memoize(
-      (subtotal, taxPercent) => subtotal * (taxPercent / 100)
-    );
+`options` prop is the same as first argument to `@derive`.
+The child is a function that accepts the derived props object
+as it's first argument:
 
-    @derive({
-      @track('shop')
-      total({shop: {items, taxPercent}}) {
-        const subtotal = calcSubtotal(items);
-        return subtotal + calcTax(subtotal, taxPercent);
-      }
-    })
-    class Total extends React.Component {
-      render() {
-        return <div>{ this.props.total }</div>
-      }
-    }
+    <Derive {...{taxPercent, items}} options={deriveOptions}>
+    {({tax, subtotal, total}) =>
+      <ul>
+        <li>tax: {tax}</li>
+        <li>subtotal: {subtotal}</li>
+        <li>total: {total}</li>
+      </ul>
+    }</Derive>
 
-Be sure to checkout the [reselect version of the example above](https://github.com/faassen/reselect#example)
-
-# install + import
+## install + import
 
     npm i react-derive -S
 
 then:
 
-    import {derive, track} from 'react-derive';
+    import {Derive, derive, track} from 'react-derive';
 
 or when included via script tag it's available as the global variable `ReactDerive`:
 
-    const {derive, track} = ReactDerive;
+    const {Derive, derive, track} = ReactDerive;
 
-# [documentation](http://gilbox.github.io/react-derive/index.js.html)
+## [documentation](http://gilbox.github.io/react-derive/index.js.html)
 
-# examples
+## examples
 
+- [decorator demo](https://github.com/gilbox/react-derive/blob/master/examples/decorator-demo/app.js)
+- [component demo](https://github.com/gilbox/react-derive/blob/master/examples/component-demo/app.js)
 - [elegant-react-hot-demo](https://github.com/gilbox/elegant-react-hot-demo) (still a WIP)
