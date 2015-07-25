@@ -121,6 +121,6 @@ or when included via script tag it's available as the global variable `ReactDeri
 
 ## examples
 
-- [decorator demo](https://github.com/gilbox/react-derive/blob/master/examples/decorator-demo/app.js)
-- [component demo](https://github.com/gilbox/react-derive/blob/master/examples/component-demo/app.js)
+- decorator demo:  [source](https://github.com/gilbox/react-derive/blob/master/examples/decorator-demo/app.js) - [live demo](http://gilbox.github.io/react-derive/examples/decorator-demo/demo.html)
+- component demo:  [source](https://github.com/gilbox/react-derive/blob/master/examples/component-demo/app.js) - [live demo](http://gilbox.github.io/react-derive/examples/component-demo/demo.html)
 - [elegant-react-hot-demo](https://github.com/gilbox/elegant-react-hot-demo) (still a WIP)
