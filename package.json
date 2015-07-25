@@ -47,7 +47,8 @@
     "jest-cli": "^0.4.16",
     "node-libs-browser": "^0.5.2",
     "react": "^0.13.3",
-    "webpack": "^1.10.1"
+    "webpack": "^1.10.1",
+    "webpack-dev-server": "^1.10.1"
   },
   "peerDependencies": {},
   "dependencies": {},

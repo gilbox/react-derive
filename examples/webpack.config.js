@@ -34,7 +34,7 @@ module.exports = {
 
   resolve: {
     alias: {
-      'elegant-react': path.resolve(__dirname + '../../src/')
+      'react-derive': path.resolve(__dirname + '../../src/')
     }
   },
 
