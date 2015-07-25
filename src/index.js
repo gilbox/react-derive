@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 const BLOCKED = {};
 
+export const globalOptions = {debug:false};
+
 /**
  * ## derive
  *
@@ -45,7 +47,7 @@ function deriveProps(options, prevProps, nextProps, derivedProps) {
       return derivedProps[key];
     }
 
-    if (options.$debug) console.log(`${DeriveDecorator.displayName}: recalculating derived prop '${key}'`);
+    if (globalOptions.debug) console.log(`Recalculating derived prop '${key}'`);
     return xf.call(delegates, nextProps, derivedProps);
   };
 
@@ -107,42 +109,12 @@ function map(f, result={}) {
   return result;
 }
 
-
 /**
  * ## Derive
- *
+ * 
  * `@derive` as a component.
- *
- *
- *     <Derive
- *       {...{taxPercent, items}}
- *       options={{
- *         @track('taxPercent')
- *         tax({taxPercent}) {
- *           return this.subtotal() * (taxPercent / 100);
- *         },
- *
- *         @track('items')
- *         subtotal({items}) {
- *           return items.reduce((acc, item) => acc + item.value, 0);
- *         },
- *
- *         @track('taxPercent')
- *         total({taxPercent}) {
- *           return this.subtotal() + this.tax();
- *         }
- *       }}>{({tax, subtotal, total}) =>
- *
- *       <ul>
- *         <li>tax: {tax}</li>
- *         <li>subtotal: {subtotal}</li>
- *         <li>total: {total}</li>
- *       </ul>
- *
- *     }</Derive>
- *
+ * @prop {Object} options
  */
-
 export class Derive extends Component {
   componentWillMount() {
     this.derivedProps = deriveProps(this.props.options, {}, this.props, {});
