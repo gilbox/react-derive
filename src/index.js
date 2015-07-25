@@ -13,7 +13,6 @@ export const globalOptions = {debug:false};
  * @return {Object}
  */
 export function derive(options={}) {
-  // Return the HoC that will manage derived props.
   return DecoratedComponent => class DeriveDecorator extends Component {
     static displayName = `Derive(${getDisplayName(DecoratedComponent)})`;
     static DecoratedComponent = DecoratedComponent;
@@ -32,9 +31,8 @@ export function derive(options={}) {
   }
 }
 
-// `deriveProps` takes props from the previous render (`prevProps`), props
-// from the current render (`nextProps`), and derived props from the previous
-// render (`derivedProps`) and returns a new object with the newly derived props.
+// `deriveProps` takes props from the previous render (`prevProps`, `derivedProps`),
+// and props from the current render (`nextProps`) and calculates the next derived props.
 function deriveProps(options, prevProps, nextProps, derivedProps) {
   const nextDerivedProps = {};
 
@@ -43,7 +41,6 @@ function deriveProps(options, prevProps, nextProps, derivedProps) {
     // When `xf` is annotated with `trackedProps` (by `@track`), only re-calculate
     // derived props when the tracked props changed.
     if (xf.trackedProps && xf.trackedProps.every(p => prevProps[p] === nextProps[p])) {
-      // No change, use previously calculated derived props.
       return derivedProps[key];
     }
 
@@ -76,6 +73,16 @@ function deriveProps(options, prevProps, nextProps, derivedProps) {
   return {...nextProps, ...nextDerivedProps};
 }
 
+function getDisplayName (comp) {
+  return comp.displayName || comp.name || 'Component';
+}
+
+// map an object to an object
+function map(f, result={}) {
+  Object.keys(this).forEach(k => result[k] = f(this[k],k));
+  return result;
+}
+
 /**
  * ## track
  *
@@ -92,26 +99,9 @@ export function track(...trackedProps) {
   }
 }
 
-function getDisplayName (comp) {
-  return comp.displayName || comp.name || 'Component';
-}
-
-/**
- * ## map (private)
- * map an object to an object
- *
- * @param {Function} f
- * @param {Object} result (optional)
- * @return {Object}
- */
-function map(f, result={}) {
-  Object.keys(this).forEach(k => result[k] = f(this[k],k));
-  return result;
-}
-
 /**
  * ## Derive
- * 
+ *
  * `@derive` as a component.
  * @prop {Object} options
  */

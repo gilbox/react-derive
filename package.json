@@ -43,6 +43,7 @@
     "babel-core": "^5.6.18",
     "babel-jest": "^5.3.0",
     "babel-loader": "^5.3.1",
+    "docker": "^0.2.14",
     "immutable": "^3.7.3",
     "jest-cli": "^0.4.16",
     "node-libs-browser": "^0.5.2",
