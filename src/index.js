@@ -95,7 +95,12 @@ function map(f, result={}) {
  */
 export function track(...trackedProps) {
   return function(target, key, descriptor) {
-    descriptor.value.trackedProps = trackedProps;
+    if (descriptor) { // ES7 decorator
+      descriptor.value.trackedProps = trackedProps;
+    } else { // ES6
+      target.trackedProps = trackedProps;
+      return target;
+    }
   }
 }
 
