@@ -105,6 +105,25 @@ as it's first argument:
       </ul>
     }</Derive>
 
+## ES6 support
+
+Using ES7 decorators is in fact optional. If you want to stick with
+ES6 constructs, it's easy to do:
+
+    export const Add =
+      (derive({
+        sum: track('a','b')
+          (function({a,b}) { return a+b })
+      })
+      class Add extends Component {
+        render() {
+          const {sum,fontSize} = this.props;
+          return <div style={{fontSize}}>a + b = {sum}</div>
+        }
+      });
+      
+See the `examples/` dir of this repo for additional examples.
+
 ## install + import
 
     npm i react-derive -S
