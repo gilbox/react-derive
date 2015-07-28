@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
 	var _react = __webpack_require__(1);
 
@@ -83,6 +83,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var globalOptions = { debug: false };
 
+	exports.globalOptions = globalOptions;
 	/**
 	 * ## derive
 	 *
@@ -92,7 +93,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {Boolean} debug (optional)
 	 * @return {Object}
 	 */
-	exports.globalOptions = globalOptions;
 
 	function derive() {
 	  var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
@@ -214,7 +214,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  return function (target, key, descriptor) {
-	    descriptor.value.trackedProps = trackedProps;
+	    if (descriptor) {
+	      // ES7 decorator
+	      descriptor.value.trackedProps = trackedProps;
+	    } else {
+	      // ES6
+	      target.trackedProps = trackedProps;
+	      return target;
+	    }
 	  };
 	}
 
