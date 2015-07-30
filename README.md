@@ -110,7 +110,7 @@ Using ES7 decorators is in fact optional. If you want to stick with
 ES6 constructs, it's easy to do:
 
     export const Add =
-      (derive({
+      derive({
         sum: track('a','b')
           (function({a,b}) { return a+b })
       })                                   // <--- function returned...
