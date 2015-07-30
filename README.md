@@ -58,9 +58,8 @@ cares about those two props. If `fontSize` changes,
 -------
 
 This project is similar to [reselect](https://github.com/faassen/reselect)
-for redux. reselect has a
-very nice way to compose *selector* functions. However,
-react-derive offers a different approach
+for redux. However, while reselect helps manage derived data from 
+global state, react-derive manages derived data from props.
 
 ## `@derive` as a decorator
 
