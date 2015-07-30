@@ -113,8 +113,8 @@ ES6 constructs, it's easy to do:
       (derive({
         sum: track('a','b')
           (function({a,b}) { return a+b })
-      })
-      class Add extends Component {
+      })  // function returned, immediately invoked by passing in class...
+      (class Add extends Component {
         render() {
           const {sum,fontSize} = this.props;
           return <div style={{fontSize}}>a + b = {sum}</div>
